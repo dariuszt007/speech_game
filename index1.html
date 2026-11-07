@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>外国語 スピーチ・発表サポーター</title>
+  <style>
+    :root {
+      --primary: #2B6CB0;
+      --primary-light: #EBF8FF;
+      --secondary: #DD6B20;
+      --secondary-light: #FFFAF0;
+      --green: #38A169;
+      --bg: #EDF2F7;
+      --text: #2D3748;
+      --muted: #718096;
+      --border: #CBD5E0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 12px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+        "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      line-height: 1.55;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      color: var(--primary);
+      font-size: 23px;
+      text-align: center;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+      overflow-x: auto;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 0 0 auto;
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 8px;
+      background: #E2E8F0;
+      color: #4A5568;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .step-box {
+      margin-bottom: 18px;
+      padding: 16px;
+      border-left: 6px solid var(--primary);
+      border-radius: 8px;
+      background: var(--primary-light);
+    }
+
+    .step-title {
+      margin-bottom: 12px;
+      color: #1A365D;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .topic-grid, .reason-grid, .card-deck {
+      display: grid;
+      gap: 10px;
+    }
+
+    .topic-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .reason-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+    .card-deck { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); }
+
+    button { font: inherit; }
+
+    .topic-btn, .reason-btn {
+      padding: 13px;
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--primary);
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .topic-btn.active, .reason-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .grammar-box {
+      margin-top: 12px;
+      padding: 14px;
+      border: 2px dashed var(--secondary);
+      border-radius: 8px;
+      background: var(--secondary-light);
+    }
+
+    .grammar-hint {
+      margin-top: 4px;
+      color: #C05621;
+      font-size: 20px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    select:focus, input:focus, button:focus-visible {
+      outline: 3px solid rgba(43,108,176,.28);
+      outline-offset: 2px;
+    }
+
+    .card-btn {
+      min-width: 0;
+      padding: 12px 8px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      text-align: center;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+    }
+
+    .card-btn:hover, .card-btn.selected {
+      border-color: var(--secondary);
+      background: var(--secondary-light);
+    }
+
+    .card-icon {
+      margin-bottom: 5px;
+      font-size: 30px;
+    }
+
+    .card-en { font-weight: 700; }
+    .card-kana { color: var(--muted); font-size: 12px; }
+    .card-jp { color: var(--primary); font-size: 13px; font-weight: 700; }
+
+    .hint {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .preview-box {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 12px;
+      background: #2D3748;
+      color: #fff;
+    }
+
+    .preview-title {
+      margin-bottom: 8px;
+      color: #A0AEC0;
+    }
+
+    .preview-text {
+      min-height: 70px;
+      font-size: 19px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .rate-control {
+      display: flex;
+      flex: 1 1 100%;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .rate-control input {
+      flex: 1;
+      min-width: 110px;
+      accent-color: #68D391;
+    }
+
+    .action-btn {
+      flex: 1 1 160px;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 0;
+      border-radius: 8px;
+      background: #4299E1;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-green { background: var(--green); }
+    .btn-green:hover { background: #2F855A; }
+    .btn-purple { background: #805AD5; }
+    .btn-red { background: #E53E3E; }
+
+    .toast {
+      position: fixed;
+      z-index: 5;
+      right: 16px;
+      bottom: 20px;
+      left: 16px;
+      width: max-content;
+      max-width: calc(100% - 32px);
+      margin: auto;
+      padding: 11px 18px;
+      border-radius: 8px;
+      background: #2D3748;
+      color: #fff;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 600px) {
+      body { padding: 7px; }
+      .container { padding: 14px; }
+      h1 { font-size: 20px; }
+      .step-box { padding: 13px; }
+      .preview-box { padding: 15px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <h1>🎤 小学校外国語 スピーチ・発表サポーター</h1>
+
+  <nav class="tab-nav" aria-label="メインメニュー">
+    <button class="tab-btn active" type="button" data-tab="speech">🎤 スピーチ作成</button>
+    <button class="tab-btn" type="button" data-tab="vocab">📚 単語カード</button>
+    <button class="tab-btn" type="button" data-tab="progress">⭐ 学習記録</button>
+  </nav>
+
+  <main>
+    <section id="section-speech" class="section active">
+      <div class="step-box">
+        <div class="step-title">STEP 1: トピックをえらぼう</div>
+        <div id="topicGrid" class="topic-grid"></div>
+      </div>
+
+      <div id="reasonStep" class="step-box" style="display:none;">
+        <div class="step-title">STEP 2: はなしたい内容をえらぼう</div>
+        <div id="reasonGrid" class="reason-grid"></div>
+      </div>
+
+      <div id="builderStep" class="step-box" style="display:none;">
+        <div class="step-title">STEP 3: 文を作ろう</div>
+
+        <div id="grammarBox" class="grammar-box"></div>
+
+        <div id="pronounControl" style="display:none;margin-top:14px;">
+          <label for="pronounSelect"><b>主語をえらぼう:</b></label>
+          <select id="pronounSelect" style="margin-top:6px;">
+            <option value="He">He</option>
+            <option value="She">She</option>
+            <option value="It">It</option>
+          </select>
+          <p class="hint">He / She は人、It は物や動物について使います。</p>
+        </div>
+
+        <div id="countryPicker" style="display:none;margin-top:14px;">
+          <label for="countrySelect"><b>🌍 国をえらぼう:</b></label>
+          <select id="countrySelect" style="margin-top:6px;">
+            <option value="">国をえらんでください</option>
+          </select>
+          <p class="hint">国によってカタカナ表記がない場合があります。</p>
+        </div>
+
+        <p style="margin:16px 0 6px;"><b>📚 単語カード（クリックで原稿に入ります）:</b></p>
+        <div id="cardDeck" class="card-deck"></div>
+
+        <div style="margin-top:16px;">
+          <label for="customInput"><b>✏️ 自分で英語を入力・変更する:</b></label>
+          <input id="customInput" type="text"
+            placeholder="単語カードを選ぶか、英語を入力してください"
+            style="margin-top:6px;">
+        </div>
+
+        <div class="controls">
+          <button id="hintButton" class="action-btn btn-purple" type="button">💡 ヒントを見る</button>
+          <button id="addSentenceButton" class="action-btn btn-green" type="button">
+            ➕ この文をスピーチに追加
+          </button>
+        </div>
+
+        <div id="hintBox" class="grammar-box" style="display:none;">
+          <b>ヒント</b>
+          <p id="hintText" style="margin-bottom:0;"></p>
+        </div>
+      </div>
+
+      <div class="preview-box">
+        <div class="preview-title">【スピーチ / Speech】</div>
+        <div id="speechText" class="preview-text">トピックと内容を選ぶと、ここにスピーチが表示されます。</div>
+
+        <div class="controls">
+          <label class="rate-control" for="speechRate">
+            読み上げ速度:
+            <input id="speechRate" type="range" min="0.6" max="1.2"
+              step="0.1" value="0.9">
+            <span id="speechRateValue">0.9×</span>
+          </label>
+          <button id="readSpeechButton" class="action-btn btn-green" type="button">🔊 スピーチを聞く</button>
+          <button id="copySpeechButton" class="action-btn" type="button">📋 コピー</button>
+          <button id="clearSpeechButton" class="action-btn btn-red" type="button">🗑️ スピーチを消す</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="section-vocab" class="section">
+      <div class="step-box">
+        <div class="step-title">📚 単語カード</div>
+        <label for="vocabCategory"><b>ジャンルをえらぼう:</b></label>
+        <select id="vocabCategory" style="margin-top:6px;">
+          <option value="all">すべて</option>
+          <option value="countries">国</option>
+          <option value="other">その他の単語</option>
+        </select>
+        <div id="vocabDeck" class="card-deck"></div>
+      </div>
+    </section>
+
+    <section id="section-progress" class="section">
+      <div class="step-box">
+        <div class="step-title">⭐ 学習記録</div>
+        <p>スピーチに追加した文の数: <b id="progressSentences">0</b></p>
+        <button id="resetProgressButton" class="action-btn btn-red" type="button">
+          学習記録をリセット
+        </button>
+        <p class="hint">記録はこの端末のブラウザーに保存されます。</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* 国連加盟国193か国と、パレスチナ、バチカン市国 */
+const COUNTRY_CODES = `
+AF AL DZ AD AO AG AR AM AU AT AZ
+BS BH BD BB BY BE BZ BJ BT BO BA BW BR BN BG BF BI CV KH CM CA CF TD CL CN CO KM CG CR CI HR CU CY CZ CD
+DK DJ DM DO
+EC EG SV GQ ER EE SZ ET
+FJ FI FR
+GA GM GE DE GH GR GD GT GN GW GY
+HT HN HU
+IS IN ID IR IQ IE IL IT
+JM JP JO
+KZ KE KI KW KG
+LA LV LB LS LR LY LI LT LU
+MG MW MY MV ML MT MH MR MU MX FM MD MC MN ME MA MZ MM
+NA NR NP NL NZ NI NE NG KP MK NO
+OM
+PK PW PS PA PG PY PE PH PL PT
+QA
+RO RU RW
+KN LC VC WS SM ST SA SN RS SC SL SG SK SI SB SO ZA KR SS ES LK SD SR SE CH SY
+TJ TZ TH TL TG TO TT TN TR TM TV
+UG UA AE GB US UY UZ
+VU VA VE VN
+YE
+ZM ZW
+`.trim().split(/\s+/);
+
+const COUNTRY_KANA = {
+  US: "アメリカ",
+  FR: "フランス",
+  AU: "オーストラリア",
+  GB: "ユナイテッド キングダム",
+  CA: "カナダ",
+  IT: "イタリア",
+  KR: "コリア",
+  PL: "ポーランド",
+  DE: "ジャーマニー",
+  ES: "スペイン",
+  CN: "チャイナ",
+  BR: "ブラジル",
+  JP: "ジャパン"
+};
+
+const COUNTRY_ARTICLES = {
+  BS: "the Bahamas",
+  GM: "the Gambia",
+  NL: "the Netherlands",
+  PH: "the Philippines",
+  AE: "the United Arab Emirates",
+  GB: "the United Kingdom",
+  US: "the United States"
+};
+
+const EN_NAMES = new Intl.DisplayNames(["en"], { type: "region" });
+const JA_NAMES = new Intl.DisplayNames(["ja"], { type: "region" });
+
+function countryFlag(code) {
+  return [...code.toUpperCase()]
+    .map(char => String.fromCodePoint(char.charCodeAt(0) + 127397))
+    .join("");
+}
+
+const COUNTRIES = COUNTRY_CODES.map(code => ({
+  code,
+  english: EN_NAMES.of(code) || code,
+  japanese: JA_NAMES.of(code) || code,
+  kana: COUNTRY_KANA[code] || ""
+})).sort((a, b) => a.english.localeCompare(b.english, "en"));
+
+function countrySpeechName(country) {
+  return COUNTRY_ARTICLES[country.code] || country.english;
+}
+
+const TOPICS = {
+  dream: {
+    label: "✨ 将来の夢 (My Future Dream)",
+    intro: "Hello, everyone. I want to tell you about my dream.",
+    reasons: [
+      {
+        jp: "【職業】〜になりたい",
+        grammar: "I want to be [ 職業 ].",
+        hint: "職業を選んで、I want to be ... の後に入れましょう。",
+        cards: [
+          ["👨‍🏫", "a teacher", "ア ティーチャー", "先生"],
+          ["👩‍⚕️", "a doctor", "ア ドクター", "医者"],
+          ["🥐", "a baker", "ア ベイカー", "パン屋さん"],
+          ["⚽", "a soccer player", "ア サッカー プレイヤー", "サッカー選手"],
+          ["🎨", "an artist", "アン アーティスト", "芸術家"],
+          ["🎤", "a singer", "ア シンガー", "歌手"],
+          ["🚀", "an astronaut", "アン アストロノート", "宇宙飛行士"],
+          ["🧑‍🍳", "a chef", "ア シェフ", "料理人"]
+        ]
+      },
+      {
+        jp: "【したいこと】〜をしたい",
+        grammar: "I want to [ 動詞 ].",
+        hint: "want to の後には動詞の原形を入れます。",
+        cards: [
+          ["🤝", "help people", "ヘルプ ピープル", "人を助ける"],
+          ["😊", "make people happy", "メイク ピープル ハッピー", "人を幸せにする"],
+          ["✈️", "travel around the world", "トラベル アラウンド ザ ワールド", "世界中を旅する"],
+          ["🍳", "cook delicious food", "クック デリシャス フード", "おいしい料理を作る"]
+        ]
+      }
+    ]
+  },
+
+  memories: {
+    label: "🏫 小学校の思い出 (My Memories)",
+    intro: "Hello, everyone. I want to talk about my memories.",
+    reasons: [
+      {
+        jp: "【行った場所】〜へ行った",
+        grammar: "I went to [ 場所 ].",
+        hint: "went to の後に行った場所を入れましょう。",
+        cards: [
+          ["🏞️", "the park", "ザ パーク", "公園"],
+          ["⛩️", "Kyoto", "キョウト", "京都"],
+          ["🎢", "an amusement park", "アン アミューズメント パーク", "遊園地"],
+          ["🏖️", "the beach", "ザ ビーチ", "海岸"],
+          ["🦁", "the zoo", "ザ ズー", "動物園"]
+        ]
+      },
+      {
+        jp: "【過去】したことを紹介する",
+        grammar: "I [ 過去の動作 ].",
+        hint: "過去にしたことを表す動詞を入れます。",
+        cards: [
+          ["🏀", "played basketball", "プレイド バスケットボール", "バスケをした"],
+          ["🍜", "ate delicious food", "エイト デリシャス フード", "おいしいものを食べた"],
+          ["🎤", "sang a song", "サング ア ソング", "歌を歌った"],
+          ["📸", "took pictures", "トゥック ピクチャーズ", "写真を撮った"]
+        ]
+      }
+    ]
+  },
+
+  can: {
+    label: "⚽ できること・得意なこと (What I Can Do)",
+    intro: "Hello, everyone. Today I'll talk about what I can do.",
+    reasons: [
+      {
+        jp: "【できること】いろいろな動作",
+        grammar: "I can [ 動作 ].",
+        hint: "can の後には動詞の原形を入れます。",
+        cards: [
+          ["🏊", "swim fast", "スウィム ファスト", "速く泳ぐ"],
+          ["🎸", "play the guitar", "プレイ ザ ギター", "ギターを弾く"],
+          ["💻", "use a computer", "ユーズ ア コンピュータ", "パソコンを使う"],
+          ["🗣️", "speak English", "スピーク イングリッシュ", "英語を話す"],
+          ["🎹", "play the piano", "プレイ ザ ピアノ", "ピアノを弾く"],
+          ["💃", "dance well", "ダンス ウェル", "上手に踊る"]
+        ]
+      },
+      {
+        jp: "【得意なこと】〜が得意",
+        grammar: "I am good at [ 名詞 / 動詞ing ].",
+        hint: "good at の後には名詞か動詞の ing 形を入れます。",
+        cards: [
+          ["⚽", "playing soccer", "プレイング サッカー", "サッカーをすること"],
+          ["🎨", "drawing pictures", "ドローイング ピクチャーズ", "絵を描くこと"],
+          ["🎤", "singing", "シンギング", "歌うこと"],
+          ["🍳", "cooking", "クッキング", "料理をすること"]
+        ]
+      }
+    ]
+  },
+
+  favorites: {
+    label: "🍕 好きなもの・季節 (My Favorites)",
+    intro: "Hello, everyone. Let me talk about my favorite things.",
+    reasons: [
+      {
+        jp: "【好きなもの】好きなものを紹介する",
+        grammar: "I like [ 名詞 ].",
+        hint: "好きなものを表す英語を入れましょう。",
+        cards: [
+          ["🐱", "cats", "キャッツ", "猫"],
+          ["🎮", "video games", "ビデオ ゲームズ", "テレビゲーム"],
+          ["🎵", "music", "ミュージック", "音楽"],
+          ["⚽", "soccer", "サッカー", "サッカー"],
+          ["📚", "English", "イングリッシュ", "英語"]
+        ]
+      },
+      {
+        jp: "【好きな食べ物】一番好きな食べ物",
+        grammar: "My favorite food is [ 食べ物 ].",
+        hint: "食べ物の名前を入れましょう。",
+        cards: [
+          ["🍣", "sushi", "スシ", "すし"],
+          ["🍛", "curry and rice", "カレー アンド ライス", "カレーライス"],
+          ["🍓", "strawberries", "ストロベリーズ", "いちご"],
+          ["🍕", "pizza", "ピザ", "ピザ"],
+          ["🍜", "ramen", "ラーメン", "ラーメン"]
+        ]
+      },
+      {
+        jp: "【好きな季節】一番好きな季節",
+        grammar: "My favorite season is [ 季節 ].",
+        hint: "spring, summer, fall, winter から選べます。",
+        cards: [
+          ["🌸", "spring", "スプリング", "春"],
+          ["🌞", "summer", "サマー", "夏"],
+          ["🍁", "fall", "フォール", "秋"],
+          ["⛄", "winter", "ウィンター", "冬"]
+        ]
+      }
+    ]
+  },
+
+  town: {
+    label: "🏙️ わたしの町・学校紹介 (My Town & School)",
+    intro: "Hello. Welcome to my town and school.",
+    reasons: [
+      {
+        jp: "【住んでいる場所】〜に住んでいる",
+        grammar: "I live in [ 場所 ].",
+        hint: "住んでいる町や場所を入れましょう。",
+        cards: [
+          ["🗾", "Tokyo", "トウキョウ", "東京"],
+          ["🏯", "Osaka", "オオサカ", "大阪"],
+          ["🏡", "a quiet town", "ア クワイエット タウン", "静かな町"],
+          ["🌆", "a big city", "ア ビッグ シティ", "大きな町"]
+        ]
+      },
+      {
+        jp: "【町の紹介】町にある場所",
+        grammar: "There is [ 場所 ] in my town.",
+        hint: "町にある場所を入れてみましょう。",
+        cards: [
+          ["📚", "a library", "ア ライブラリー", "図書館"],
+          ["🏥", "a hospital", "ア ホスピタル", "病院"],
+          ["🏬", "a shopping mall", "ア ショッピング モール", "ショッピングモール"],
+          ["🌳", "a big park", "ア ビッグ パーク", "大きな公園"]
+        ]
+      }
+    ]
+  },
+
+  weekend: {
+    label: "📅 週末・休日の過ごし方 (My Weekend)",
+    intro: "Hello, everyone. This is my weekend.",
+    reasons: [
+      {
+        jp: "【週末の習慣】週末にすること",
+        grammar: "I [ 動作 ] on weekends.",
+        hint: "週末によくすることを英語で入れましょう。",
+        cards: [
+          ["🚲", "ride my bicycle", "ライド マイ バイシクル", "自転車に乗る"],
+          ["📖", "read books", "リード ブックス", "本を読む"],
+          ["🍳", "cook with my family", "クック ウィズ マイ ファミリー", "家族と料理をする"],
+          ["🎮", "play video games", "プレイ ビデオ ゲームズ", "テレビゲームをする"]
+        ]
+      }
+    ]
+  },
+
+  hero: {
+    label: "👨‍👩‍👧‍👦 家族・お友達の紹介 (My Hero / Family)",
+    intro: "Hello. I want to introduce my family and hero.",
+    reasons: [
+      {
+        jp: "【人物の紹介】彼・彼女・それはとても〜です",
+        grammar: "SUBJECT is very [ 形容詞 ].",
+        subjectChoice: true,
+        hint: "人なら He または She、物や動物なら It を選びます。",
+        cards: [
+          ["💖", "kind", "カインド", "やさしい"],
+          ["⚡", "cool", "クール", "かっこいい"],
+          ["🔥", "strong", "ストロング", "強い"],
+          ["😊", "funny", "ファニー", "おもしろい"],
+          ["🌟", "amazing", "アメイジング", "すばらしい"],
+          ["🐾", "cute", "キュート", "かわいい"]
+        ]
+      },
+      {
+        jp: "【家族・友達】大切な人を紹介する",
+        grammar: "I like [ 人 ].",
+        hint: "家族や友達を表す言葉を入れましょう。",
+        cards: [
+          ["👨‍👩‍👧‍👦", "my family", "マイ ファミリー", "私の家族"],
+          ["🦸", "my hero", "マイ ヒーロー", "私のヒーロー"],
+          ["👩", "my mother", "マイ マザー", "私のお母さん"],
+          ["👨", "my father", "マイ ファーザー", "私のお父さん"],
+          ["🧑", "my friend", "マイ フレンド", "私の友達"]
+        ]
+      },
+      {
+        jp: "【あこがれの人】尊敬する人",
+        grammar: "I admire [ 人 ].",
+        hint: "admire の後に尊敬する人を入れます。",
+        cards: [
+          ["👩", "my mother", "マイ マザー", "私のお母さん"],
+          ["👨", "my father", "マイ ファーザー", "私のお父さん"],
+          ["👩‍🏫", "my teacher", "マイ ティーチャー", "私の先生"]
+        ]
+      }
+    ]
+  },
+
+  world: {
+    label: "🌏 行ってみたい国 (Countries I Want to Visit)",
+    intro: "Hello. I want to talk about a country I want to visit.",
+    reasons: [
+      {
+        jp: "【行きたい国】行ってみたい国",
+        grammar: "I want to visit [ 国 ].",
+        countryChoice: true,
+        hint: "行きたい国をカードかメニューから選びましょう。",
+        cards: [
+          ["🇺🇸", "the United States", "アメリカ", "アメリカ合衆国"],
+          ["🇫🇷", "France", "フランス", "フランス"],
+          ["🇦🇺", "Australia", "オーストラリア", "オーストラリア"],
+          ["🇬🇧", "the United Kingdom", "ユナイテッド キングダム", "イギリス"],
+          ["🇨🇦", "Canada", "カナダ", "カナダ"],
+          ["🇮🇹", "Italy", "イタリア", "イタリア"],
+          ["🇰🇷", "South Korea", "コリア", "韓国"],
+          ["🇵🇱", "Poland", "ポーランド", "ポーランド"],
+          ["🇩🇪", "Germany", "ジャーマニー", "ドイツ"],
+          ["🇪🇸", "Spain", "スペイン", "スペイン"],
+          ["🇨🇳", "China", "チャイナ", "中国"],
+          ["🇧🇷", "Brazil", "ブラジル", "ブラジル"],
+          ["🇯🇵", "Japan", "ジャパン", "日本"]
+        ]
+      },
+      {
+        jp: "【旅行でしたいこと】見たい・食べたい",
+        grammar: "I want to [ 動作 ] there.",
+        hint: "want to の後に動詞の原形を入れましょう。",
+        cards: [
+          ["🍕", "eat real pizza", "イート リアル ピザ", "本場のピザを食べる"],
+          ["🏰", "see famous castles", "シー フェイマス キャッスルズ", "有名なお城を見る"],
+          ["🐨", "see koalas", "シー コアラズ", "コアラを見る"],
+          ["📸", "take many pictures", "テイク メニー ピクチャーズ", "たくさん写真を撮る"]
+        ]
+      }
+    ]
+  }
+};
+
+const EXTRA_VOCAB = [
+  ["🏊", "swim", "スウィム", "泳ぐ"],
+  ["📖", "read books", "リード ブックス", "本を読む"],
+  ["⚽", "play soccer", "プレイ サッカー", "サッカーをする"],
+  ["🤝", "help people", "ヘルプ ピープル", "人を助ける"],
+  ["🐱", "cats", "キャッツ", "猫"],
+  ["🎵", "music", "ミュージック", "音楽"],
+  ["🍣", "sushi", "スシ", "すし"],
+  ["🌸", "spring", "スプリング", "春"],
+  ["🌞", "summer", "サマー", "夏"],
+  ["⛄", "winter", "ウィンター", "冬"],
+  ["💖", "kind", "カインド", "やさしい"],
+  ["😊", "funny", "ファニー", "おもしろい"]
+];
+
+let currentTopicKey = "";
+let currentReasonIndex = null;
+let currentPronoun = "He";
+let speechLines = [];
+let progress = loadProgress();
+let toastTimer = null;
+
+function loadProgress() {
+  const defaultProgress = { sentencesAdded: 0 };
+  try {
+    const saved = JSON.parse(localStorage.getItem("englishLearningProgress"));
+    return saved ? { ...defaultProgress, ...saved } : defaultProgress;
+  } catch {
+    return defaultProgress;
+  }
+}
+
+function saveProgress() {
+  try {
+    localStorage.setItem("englishLearningProgress", JSON.stringify(progress));
+  } catch {
+    showToast("学習記録を保存できませんでした。");
+  }
+  updateProgressDisplay();
+}
+
+function updateProgressDisplay() {
+  document.getElementById("progressSentences").textContent = progress.sentencesAdded;
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2500);
+}
+
+function showSection(name) {
+  document.querySelectorAll(".tab-btn").forEach(button => {
+    button.classList.toggle("active", button.dataset.tab === name);
+  });
+
+  document.querySelectorAll(".section").forEach(section => {
+    section.classList.toggle("active", section.id === `section-${name}`);
+  });
+
+  if (name === "progress") updateProgressDisplay();
+  if (name === "vocab") renderVocab();
+}
+
+document.querySelectorAll(".tab-btn").forEach(button => {
+  button.addEventListener("click", () => showSection(button.dataset.tab));
+});
+
+function buildTopicButtons() {
+  const grid = document.getElementById("topicGrid");
+
+  Object.entries(TOPICS).forEach(([key, topic]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "topic-btn";
+    button.textContent = topic.label;
+    button.addEventListener("click", () => chooseTopic(key, button));
+    grid.appendChild(button);
+  });
+}
+
+function chooseTopic(key, button) {
+  currentTopicKey = key;
+  currentReasonIndex = null;
+
+  document.querySelectorAll(".topic-btn").forEach(item => item.classList.remove("active"));
+  button.classList.add("active");
+
+  const grid = document.getElementById("reasonGrid");
+  grid.innerHTML = "";
+
+  TOPICS[key].reasons.forEach((reason, index) => {
+    const reasonButton = document.createElement("button");
+    reasonButton.type = "button";
+    reasonButton.className = "reason-btn";
+    reasonButton.textContent = `💡 ${reason.jp}`;
+    reasonButton.addEventListener("click", () => chooseReason(index));
+    grid.appendChild(reasonButton);
+  });
+
+  document.getElementById("reasonStep").style.display = "block";
+  document.getElementById("builderStep").style.display = "none";
+
+  // Topic を変えたら、新しいスピーチを作り始める
+  speechLines = [];
+  renderSpeech();
+}
+
+function chooseReason(index) {
+  currentReasonIndex = index;
+  currentPronoun = "He";
+
+  const reason = TOPICS[currentTopicKey].reasons[index];
+
+  document.querySelectorAll(".reason-btn").forEach((button, i) => {
+    button.classList.toggle("active", i === index);
+  });
+
+  document.getElementById("builderStep").style.display = "block";
+  document.getElementById("customInput").value = "";
+  document.getElementById("hintBox").style.display = "none";
+  document.getElementById("hintButton").textContent = "💡 ヒントを見る";
+
+  document.getElementById("pronounControl").style.display =
+    reason.subjectChoice ? "block" : "none";
+  document.getElementById("countryPicker").style.display =
+    reason.countryChoice ? "block" : "none";
+
+  if (reason.subjectChoice) {
+    document.getElementById("pronounSelect").value = "He";
+  }
+
+  if (reason.countryChoice) {
+    fillCountryMenu();
+    document.getElementById("countrySelect").value = "";
+  }
+
+  renderGrammar();
+  renderCards(reason.cards);
+  updateHintText();
+}
+
+function fillCountryMenu() {
+  const select = document.getElementById("countrySelect");
+  if (select.dataset.loaded === "true") return;
+
+  COUNTRIES.forEach(country => {
+    const option = document.createElement("option");
+    const kanaText = country.kana ? ` — ${country.kana}` : "";
+
+    option.value = countrySpeechName(country);
+    option.textContent =
+      `${countryFlag(country.code)} ${country.english}${kanaText}（${country.japanese}）`;
+
+    select.appendChild(option);
+  });
+
+  select.dataset.loaded = "true";
+}
+
+function renderGrammar() {
+  if (!currentTopicKey || currentReasonIndex === null) return;
+
+  const reason = TOPICS[currentTopicKey].reasons[currentReasonIndex];
+  const grammar = reason.grammar.replace(/SUBJECT/g, currentPronoun);
+  const box = document.getElementById("grammarBox");
+
+  box.replaceChildren();
+
+  const label = document.createElement("div");
+  label.textContent = "【使いたい文法パターン】";
+
+  const pattern = document.createElement("div");
+  pattern.className = "grammar-hint";
+  pattern.textContent = grammar;
+
+  box.append(label, pattern);
+}
+
+function renderCards(cards) {
+  const deck = document.getElementById("cardDeck");
+  deck.innerHTML = "";
+
+  cards.forEach(([icon, english, kana, japanese]) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "card-btn";
+
+    const iconDiv = document.createElement("div");
+    iconDiv.className = "card-icon";
+    iconDiv.textContent = icon;
+
+    const englishDiv = document.createElement("div");
+    englishDiv.className = "card-en";
+    englishDiv.textContent = english;
+
+    const kanaDiv = document.createElement("div");
+    kanaDiv.className = "card-kana";
+    kanaDiv.textContent = kana;
+
+    const japaneseDiv = document.createElement("div");
+    japaneseDiv.className = "card-jp";
+    japaneseDiv.textContent = japanese;
+
+    button.append(iconDiv, englishDiv, kanaDiv, japaneseDiv);
+
+    button.addEventListener("click", () => {
+      document.getElementById("customInput").value = english;
+      selectWord(english);
+      deck.querySelectorAll(".card-btn").forEach(card => card.classList.remove("selected"));
+      button.classList.add("selected");
+      speakEnglish(english);
+    });
+
+    deck.appendChild(button);
+  });
+}
+
+function selectWord(word) {
+  if (!currentTopicKey || currentReasonIndex === null) return;
+
+  const reason = TOPICS[currentTopicKey].reasons[currentReasonIndex];
+  if (reason.countryChoice) {
+    const country = COUNTRIES.find(item => countrySpeechName(item) === word);
+    document.getElementById("countrySelect").value = country ? word : "";
+  }
+
+  updateHintText();
+}
+
+function currentSentence() {
+  if (!currentTopicKey || currentReasonIndex === null) return "";
+
+  const reason = TOPICS[currentTopicKey].reasons[currentReasonIndex];
+  let sentence = reason.grammar.replace(/SUBJECT/g, currentPronoun);
+  const word = document.getElementById("customInput").value.trim();
+
+  if (word) sentence = sentence.replace(/\[[^\]]*\]/, word);
+  return sentence;
+}
+
+function updateHintText() {
+  if (!currentTopicKey || currentReasonIndex === null) return;
+
+  const reason = TOPICS[currentTopicKey].reasons[currentReasonIndex];
+  const match = reason.grammar.match(/\[([^\]]+)\]/);
+  const slot = match ? match[1] : "文";
+  const word = document.getElementById("customInput").value.trim();
+
+  document.getElementById("hintText").textContent = word
+    ? `「${word}」を文の [${slot}] に入れて、文全体を読んでみましょう。`
+    : (reason.hint || `文の [${slot}] に入る英語を考えてみましょう。`);
+}
+
+document.getElementById("pronounSelect").addEventListener("change", event => {
+  currentPronoun = event.target.value;
+  renderGrammar();
+});
+
+document.getElementById("countrySelect").addEventListener("change", event => {
+  if (!event.target.value) return;
+
+  document.getElementById("customInput").value = event.target.value;
+  selectWord(event.target.value);
+});
+
+document.getElementById("customInput").addEventListener("input", updateHintText);
+
+document.getElementById("hintButton").addEventListener("click", () => {
+  const box = document.getElementById("hintBox");
+  const show = box.style.display === "none";
+  box.style.display = show ? "block" : "none";
+  document.getElementById("hintButton").textContent =
+    show ? "🙈 ヒントを隠す" : "💡 ヒントを見る";
+});
+
+document.getElementById("addSentenceButton").addEventListener("click", () => {
+  const sentence = currentSentence();
+
+  if (!sentence || sentence.includes("[")) {
+    showToast("単語カードを選ぶか、英語を入力してください。");
+    return;
+  }
+
+  if (speechLines.length === 0) {
+    speechLines.push(TOPICS[currentTopicKey].intro);
+  }
+
+  speechLines.push(sentence);
+  progress.sentencesAdded += 1;
+  saveProgress();
+  renderSpeech();
+  showToast("スピーチに文を追加しました。");
+});
+
+function renderSpeech() {
+  const text = speechLines.length
+    ? [...speechLines, "Thank you for listening."].join("\n")
+    : "トピックと内容を選ぶと、ここにスピーチが表示されます。";
+
+  document.getElementById("speechText").textContent = text;
+}
+
+document.getElementById("clearSpeechButton").addEventListener("click", () => {
+  speechLines = [];
+  renderSpeech();
+  showToast("スピーチを消しました。");
+});
+
+function speakEnglish(text) {
+  if (!("speechSynthesis" in window)) {
+    showToast("このブラウザーは音声読み上げに対応していません。");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-GB";
+  utterance.rate = Number(document.getElementById("speechRate").value);
+  window.speechSynthesis.speak(utterance);
+}
+
+document.getElementById("readSpeechButton").addEventListener("click", () => {
+  if (!speechLines.length) {
+    showToast("先にスピーチへ文を追加してください。");
+    return;
+  }
+  speakEnglish(document.getElementById("speechText").textContent);
+});
+
+document.getElementById("speechRate").addEventListener("input", event => {
+  document.getElementById("speechRateValue").textContent =
+    `${Number(event.target.value).toFixed(1)}×`;
+});
+
+async function copyText(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+    }
+    showToast("コピーしました。");
+  } catch {
+    showToast("コピーできませんでした。");
+  }
+}
+
+document.getElementById("copySpeechButton").addEventListener("click", () => {
+  copyText(document.getElementById("speechText").textContent);
+});
+
+function makeVocabCard([icon, english, kana, japanese]) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "card-btn";
+
+  const iconDiv = document.createElement("div");
+  iconDiv.className = "card-icon";
+  iconDiv.textContent = icon;
+
+  const englishDiv = document.createElement("div");
+  englishDiv.className = "card-en";
+  englishDiv.textContent = english;
+
+  const kanaDiv = document.createElement("div");
+  kanaDiv.className = "card-kana";
+  kanaDiv.textContent = kana || "";
+
+  const japaneseDiv = document.createElement("div");
+  japaneseDiv.className = "card-jp";
+  japaneseDiv.textContent = japanese || "";
+
+  button.append(iconDiv, englishDiv, kanaDiv, japaneseDiv);
+  button.addEventListener("click", () => speakEnglish(english));
+  return button;
+}
+
+function renderVocab() {
+  const category = document.getElementById("vocabCategory").value;
+  const deck = document.getElementById("vocabDeck");
+  deck.innerHTML = "";
+
+  const topicCards = Object.values(TOPICS)
+    .flatMap(topic => topic.reasons)
+    .flatMap(reason => reason.cards);
+
+  const countryCards = COUNTRIES.map(country => [
+    countryFlag(country.code),
+    countrySpeechName(country),
+    country.kana,
+    country.japanese
+  ]);
+
+  const allCards = [...EXTRA_VOCAB, ...topicCards];
+
+  const visibleCards = category === "countries"
+    ? countryCards
+    : category === "other"
+      ? allCards
+      : [...allCards, ...countryCards];
+
+  visibleCards.forEach(card => deck.appendChild(makeVocabCard(card)));
+}
+
+document.getElementById("vocabCategory").addEventListener("change", renderVocab);
+
+document.getElementById("resetProgressButton").addEventListener("click", () => {
+  if (!window.confirm("学習記録をリセットしますか？")) return;
+
+  progress = { sentencesAdded: 0 };
+  try {
+    localStorage.removeItem("englishLearningProgress");
+  } catch {}
+
+  updateProgressDisplay();
+  showToast("学習記録をリセットしました。");
+});
+
+buildTopicButtons();
+updateProgressDisplay();
+renderSpeech();
+</script>
+</body>
+</html>
