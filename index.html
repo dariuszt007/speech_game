@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>外国語 スピーチ・発表サポーター</title>
+  <style>
+    :root {
+      --primary: #2B6CB0;
+      --primary-light: #EBF8FF;
+      --secondary: #DD6B20;
+      --secondary-light: #FFFAF0;
+      --accent-green: #38A169;
+      --accent-green-hover: #2F855A;
+      --bg: #EDF2F7;
+      --card-bg: #FFFFFF;
+      --text: #2D3748;
+      --text-muted: #718096;
+      --border-color: #CBD5E0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+        "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 16px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      font-size: 24px;
+      margin: 0 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 8px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: #E2E8F0;
+      border: 0;
+      padding: 10px 18px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #4A5568;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover { background: #CBD5E0; }
+    .tab-btn.active { background: var(--primary); color: white; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .step-box {
+      background: var(--primary-light);
+      border-left: 6px solid var(--primary);
+      padding: 16px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+
+    .step-title {
+      font-weight: bold;
+      font-size: 18px;
+      color: #1A365D;
+      margin-bottom: 12px;
+    }
+
+    select, input[type="text"] {
+      font-size: 16px;
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      border: 2px solid var(--border-color);
+      background: #FFF;
+    }
+
+    select:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(43,108,176,.2);
+    }
+
+    .topic-grid, .reason-grid, .grammar-list-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .topic-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .reason-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+    .topic-btn, .reason-btn {
+      background: #FFF;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .topic-btn:hover, .reason-btn:hover { background: #E2E8F0; }
+    .topic-btn.active, .reason-btn.active { background: var(--primary); color: #FFF; }
+
+    .grammar-box {
+      background: var(--secondary-light);
+      border: 2px dashed var(--secondary);
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+
+    .grammar-hint {
+      font-size: 20px;
+      font-weight: bold;
+      color: #C05621;
+      margin-top: 4px;
+    }
+
+    .card-deck {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .word-card {
+      background: #FFF;
+      border: 2px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .1s, border-color .2s, box-shadow .2s;
+      user-select: none;
+    }
+
+    .word-card:hover, .word-card:focus {
+      transform: translateY(-2px);
+      border-color: var(--secondary);
+      outline: none;
+    }
+
+    .word-card.selected {
+      border-color: var(--secondary);
+      background: var(--secondary-light);
+      box-shadow: 0 0 8px rgba(221,107,32,.4);
+    }
+
+    .card-icon { font-size: 32px; margin-bottom: 4px; }
+    .card-en { font-weight: bold; font-size: 17px; }
+    .card-kana { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+    .card-jp { font-size: 13px; color: var(--primary); font-weight: bold; }
+
+    .preview-box {
+      background: #2D3748;
+      color: #FFF;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 24px;
+    }
+
+    .preview-title { font-size: 16px; color: #A0AEC0; margin-bottom: 8px; }
+    .preview-text {
+      font-size: 20px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      flex: 1;
+      min-width: 180px;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .action-btn:active { transform: scale(.98); }
+    .btn-speak { background: var(--accent-green); color: white; }
+    .btn-speak:hover { background: var(--accent-green-hover); }
+    .btn-copy { background: #4299E1; color: white; }
+    .btn-copy:hover { background: #3182CE; }
+
+    .speed-control {
+      flex: 1 1 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-weight: bold;
+      color: white;
+    }
+
+    .speed-control input {
+      flex: 1;
+      min-width: 140px;
+      accent-color: #68D391;
+    }
+
+    .grammar-list-grid {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      margin-top: 12px;
+    }
+
+    .grammar-item-card {
+      background: #FFF;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      transition: transform .1s, border-color .2s;
+    }
+
+    .grammar-item-card:hover, .grammar-item-card:focus {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    .grammar-item-tag {
+      font-size: 12px;
+      background: var(--secondary-light);
+      color: var(--secondary);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+
+    .grammar-item-pat { font-size: 16px; font-weight: bold; color: var(--primary); }
+    .grammar-item-jp { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2D3748;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
+      z-index: 1000;
+      width: max-content;
+      max-width: calc(100% - 32px);
+    }
+
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 600px) {
+      body { padding: 8px; }
+      .container { padding: 16px; }
+      h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🎤 小学校外国語 スピーチ・発表サポーター</h1>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('speech')">🎤 スピーチ作成</button>
+    <button class="tab-btn" onclick="switchTab('vocab')">📚 索引・単語帳</button>
+    <button class="tab-btn" onclick="switchTab('grammar')">📖 かんたん文法ガイド</button>
+  </div>
+
+  <div id="tab-speech" class="tab-content active">
+    <div class="step-box">
+      <div class="step-title">STEP 1: はっぴょうするトピックをえらぼう</div>
+      <div class="topic-grid">
+        <button class="topic-btn" onclick="selectTopic('dream', this)">✨ 将来の夢 (My Future Dream)</button>
+        <button class="topic-btn" onclick="selectTopic('memories', this)">🏫 小学校の思い出 (My Memories)</button>
+        <button class="topic-btn" onclick="selectTopic('can', this)">⚽ できること・得意なこと (What I Can Do)</button>
+        <button class="topic-btn" onclick="selectTopic('favorites', this)">🍕 好きなもの・季節 (My Favorites)</button>
+        <button class="topic-btn" onclick="selectTopic('town', this)">🏙️ わたしの町・学校紹介 (My Town & School)</button>
+        <button class="topic-btn" onclick="selectTopic('weekend', this)">📅 週末・休日の過ごし方 (My Weekend)</button>
+        <button class="topic-btn" onclick="selectTopic('hero', this)">👨‍👩‍👧‍👦 家族・お友達の紹介 (My Hero / Family)</button>
+        <button class="topic-btn" onclick="selectTopic('world', this)">🌏 行ってみたい国 (Countries I Want to Visit)</button>
+      </div>
+    </div>
+
+    <div class="step-box" id="step2" style="display:none;">
+      <div class="step-title">STEP 2: つたえたい内容をえらぼう（日本語）</div>
+      <div class="reason-grid" id="reasonGrid"></div>
+    </div>
+
+    <div class="step-box" id="step3" style="display:none;">
+      <div class="step-title">STEP 3: えいごのぶんぽうパターンと単語カード</div>
+      <div class="grammar-box" id="grammarBox"></div>
+      <div style="margin-top:16px;">
+        <b>📚 つかえる単語カード（クリックで単語が入ります）:</b>
+        <div class="card-deck" id="cardDeck"></div>
+      </div>
+      <div style="margin-top:16px;">
+        <label for="customInput"><b>✏️ 自分で自由に入力する（または変更する）:</b></label>
+        <input type="text" id="customInput" placeholder="カードを選ぶか、直接英語を入力" style="margin-top:6px;">
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-vocab" class="tab-content">
+    <div class="step-box">
+      <div class="step-title">📚 カテゴリ別 単語帳（クリックすると発音が聞けるよ！）</div>
+      <div style="margin-bottom:12px;">
+        <label for="vocabCategory"><b>ジャンルをえらぶ:</b></label>
+        <select id="vocabCategory" onchange="renderVocabCards()" style="margin-top:6px;">
+          <option value="all">🌟 すべての単語 (All Words)</option>
+          <option value="jobs">👨‍🏫 職業・なりたいもの (Jobs)</option>
+          <option value="actions_past">🏃 過去形の動詞 (Past Verbs)</option>
+          <option value="actions_present">⚽ 動作・現在形 (Verbs / Present)</option>
+          <option value="places_countries">🗽 場所・国名 (Places & Countries)</option>
+          <option value="nouns_things">🍕 食べ物・季節・名詞 (Nouns)</option>
+        </select>
+      </div>
+      <div class="card-deck" id="vocabCardDeck"></div>
+    </div>
+  </div>
+
+  <div id="tab-grammar" class="tab-content">
+    <div class="step-box">
+      <div class="step-title">📖 小学校でつかえる かんたん文法ガイド</div>
+      <p style="margin-top:0;color:var(--text-muted);">
+        スピーチや発表で役立つ基本の文法パターンです。クリックすると例文が読み上げられます！
+      </p>
+      <div class="grammar-list-grid" id="grammarListGrid"></div>
+    </div>
+  </div>
+
+  <div class="preview-box">
+    <div class="preview-title">【原稿プレビュー / Speech Preview】</div>
+    <div class="preview-text" id="previewText">トピックを選択するとここに英語の例文ができます。</div>
+    <div class="controls">
+      <label class="speed-control" for="speechRate">
+        Prędkość czytania:
+        <input
+          type="range"
+          id="speechRate"
+          min="0.6"
+          max="1.2"
+          step="0.1"
+          value="0.85"
+          oninput="updateSpeechRateLabel()"
+        >
+        <span id="speechRateValue">0.9×</span>
+      </label>
+      <button class="action-btn btn-speak" onclick="speakText()">🔊 英語をよみあげる</button>
+      <button class="action-btn btn-copy" onclick="copyText()">📋 原稿をコピーする</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+const TOPICS = {
+  dream: {
+    intro: "Hello, everyone. I want to tell you about my dream.",
+    reasons: [
+      {
+        jp: "【名詞】〜になりたい（職業）",
+        grammar: "I want to be a [ 名詞 ].",
+        cards: [
+          { icon: "👨‍🏫", en: "teacher", kana: "ティーチャー", jp: "先生" },
+          { icon: "👩‍⚕️", en: "doctor", kana: "ドクター", jp: "医者" },
+          { icon: "🥐", en: "baker", kana: "ベイカー", jp: "パン屋さん" },
+          { icon: "🎮", en: "game creator", kana: "ゲーム クリエイター", jp: "ゲーム制作者" },
+          { icon: "⚽", en: "soccer player", kana: "サッカー プレイヤー", jp: "サッカー選手" },
+          { icon: "🎨", en: "artist", kana: "アーティスト", jp: "画家・芸術家" },
+          { icon: "👮", en: "police officer", kana: "ポリス オフィサー", jp: "警察官" },
+          { icon: "👨‍🚒", en: "firefighter", kana: "ファイヤーファイター", jp: "消防士" },
+          { icon: "🎤", en: "singer", kana: "シンガー", jp: "歌手" },
+          { icon: "🐶", en: "vet", kana: "ベット", jp: "獣医" },
+          { icon: "🚀", en: "astronaut", kana: "アストロノート", jp: "宇宙飛行士" },
+          { icon: "🧑‍🔬", en: "scientist", kana: "サイエンティスト", jp: "科学者" },
+          { icon: "👩‍⚕️", en: "nurse", kana: "ナース", jp: "看護師" },
+          { icon: "🧑‍🌾", en: "farmer", kana: "ファーマー", jp: "農家" },
+          { icon: "📷", en: "photographer", kana: "フォトグラファー", jp: "写真家" }
+        ]
+      },
+      {
+        jp: "【動作】〜をしたい",
+        grammar: "I want to [ 動詞の原形 ].",
+        cards: [
+          { icon: "🤝", en: "help people", kana: "ヘルプ ピープル", jp: "人を助ける" },
+          { icon: "😊", en: "make people happy", kana: "メイク ピープル ハッピー", jp: "人を幸せにする" },
+          { icon: "✈️", en: "travel around the world", kana: "トラベル アラウンド ザ ワールド", jp: "世界中を旅する" },
+          { icon: "🍳", en: "cook delicious food", kana: "クック デリシャス フード", jp: "美味しい料理を作る" },
+          { icon: "📚", en: "teach children", kana: "ティーチ チルドレン", jp: "子どもたちに教える" },
+          { icon: "🐾", en: "help animals", kana: "ヘルプ アニマルズ", jp: "動物を助ける" }
+        ]
+      },
+      {
+        jp: "【仕事】〜で働きたい",
+        grammar: "I want to work at [ 場所 ].",
+        cards: [
+          { icon: "🏥", en: "a hospital", kana: "ア ホスピタル", jp: "病院" },
+          { icon: "🏫", en: "a school", kana: "ア スクール", jp: "学校" },
+          { icon: "🐾", en: "an animal hospital", kana: "アン アニマル ホスピタル", jp: "動物病院" },
+          { icon: "🍽️", en: "a restaurant", kana: "ア レストラン", jp: "レストラン" }
+        ]
+      }
+    ]
+  },
+
+  memories: {
+    intro: "Hello, everyone. I want to talk about my memories.",
+    reasons: [
+      {
+        jp: "【過去】〜へ行った（went）",
+        grammar: "I went to [ 場所 ].",
+        cards: [
+          { icon: "🏞️", en: "the park", kana: "ザ パーク", jp: "公園" },
+          { icon: "⛩️", en: "Kyoto", kana: "キョウト", jp: "京都" },
+          { icon: "🎢", en: "an amusement park", kana: "アン アミューズメント パーク", jp: "遊園地" },
+          { icon: "🏖️", en: "the beach", kana: "ザ ビーチ", jp: "海岸" },
+          { icon: "🏕️", en: "the school trip", kana: "ザ スクール トリップ", jp: "修学旅行" },
+          { icon: "🦁", en: "the zoo", kana: "ザ ズー", jp: "動物園" }
+        ]
+      },
+      {
+        jp: "【過去】〜をした・食べた",
+        grammar: "I [ 過去形の動詞 ].",
+        cards: [
+          { icon: "🏀", en: "played basketball", kana: "プレイド バスケットボール", jp: "バスケをした" },
+          { icon: "🍜", en: "ate delicious food", kana: "エイト デリシャス フード", jp: "おいしいものを食べた" },
+          { icon: "🎶", en: "enjoyed the music festival", kana: "エンジョイド ザ ミュージック フェスティバル", jp: "音楽会を楽しんだ" },
+          { icon: "🏃", en: "enjoyed sports day", kana: "エンジョイド スポーツ デー", jp: "運動会を楽しんだ" },
+          { icon: "🎤", en: "sang a song", kana: "サング ア ソング", jp: "歌を歌った" },
+          { icon: "📸", en: "took pictures", kana: "トゥック ピクチャーズ", jp: "写真を撮った" },
+          { icon: "🎂", en: "made a cake", kana: "メイド ア ケイク", jp: "ケーキを作った" }
+        ]
+      },
+      {
+        jp: "【思い出】行事を楽しんだ",
+        grammar: "I enjoyed [ 行事 ].",
+        cards: [
+          { icon: "🏫", en: "the school trip", kana: "ザ スクール トリップ", jp: "修学旅行" },
+          { icon: "🏃", en: "sports day", kana: "スポーツ デー", jp: "運動会" },
+          { icon: "🎵", en: "the school concert", kana: "ザ スクール コンサート", jp: "音楽会" },
+          { icon: "🎪", en: "the school festival", kana: "ザ スクール フェスティバル", jp: "学校のお祭り" }
+        ]
+      }
+    ]
+  },
+
+  can: {
+    intro: "Hello, everyone. Today I'll talk about what I can do.",
+    reasons: [
+      {
+        jp: "【能力】〜ができる（can）",
+        grammar: "I can [ 動詞の原形 ].",
+        cards: [
+          { icon: "🏊", en: "swim fast", kana: "スウィム ファスト", jp: "速く泳ぐ" },
+          { icon: "🎸", en: "play the guitar", kana: "プレイ ザ ギター", jp: "ギターを弾く" },
+          { icon: "💻", en: "use a computer", kana: "ユーズ ア コンピュータ", jp: "パソコンを使う" },
+          { icon: "🗣️", en: "speak English", kana: "スピーク イングリッシュ", jp: "英語を話す" },
+          { icon: "🎹", en: "play the piano", kana: "プレイ ザ ピアノ", jp: "ピアノを弾く" },
+          { icon: "💃", en: "dance well", kana: "ダンス ウェル", jp: "上手に踊る" },
+          { icon: "🍳", en: "cook curry", kana: "クック カレー", jp: "カレーを作る" },
+          { icon: "🖼️", en: "paint pictures", kana: "ペイント ピクチャーズ", jp: "絵を描く" },
+          { icon: "♟️", en: "play chess", kana: "プレイ チェス", jp: "チェスをする" }
+        ]
+      },
+      {
+        jp: "【得意】〜が得意である",
+        grammar: "I am good at [ 名詞 / 動詞ing ].",
+        cards: [
+          { icon: "⚽", en: "playing soccer", kana: "プレイング サッカー", jp: "サッカーをすること" },
+          { icon: "🎨", en: "drawing pictures", kana: "ドローイング ピクチャーズ", jp: "絵を描くこと" },
+          { icon: "📐", en: "math", kana: "マス", jp: "算数" },
+          { icon: "🎤", en: "singing", kana: "シンギング", jp: "歌うこと" },
+          { icon: "🍳", en: "cooking", kana: "クッキング", jp: "料理をすること" }
+        ]
+      }
+    ]
+  },
+
+  favorites: {
+    intro: "Hello, everyone. Let me talk about my favorite things.",
+    reasons: [
+      {
+        jp: "【一番好きなもの】季節・食べ物・教科",
+        grammar: "My favorite season is spring.",
+        cards: [
+          { icon: "🌸", en: "My favorite season is spring.", kana: "マイ フェイバリット シーズン イズ スプリング", jp: "一番好きな季節は春です" },
+          { icon: "🍦", en: "My favorite food is ice cream.", kana: "マイ フェイバリット フード イズ アイスクリーム", jp: "一番好きな食べ物はアイスです" },
+          { icon: "📐", en: "My favorite subject is math.", kana: "マイ フェイバリット サブジェクト イズ マス", jp: "一番好きな教科は算数です" }
+        ]
+      },
+      {
+        jp: "【状態】それは〜である（It is）",
+        grammar: "It is [ 形容詞 ].",
+        cards: [
+          { icon: "😋", en: "delicious", kana: "デリシャス", jp: "おいしい" },
+          { icon: "☀️", en: "warm and sunny", kana: "ウォーム アンド サニー", jp: "あたたかくて晴れ" },
+          { icon: "🤩", en: "fun and exciting", kana: "ファン アンド エキサイティング", jp: "楽しくてワクワクする" },
+          { icon: "🌈", en: "beautiful", kana: "ビューティフル", jp: "美しい" }
+        ]
+      },
+      {
+        jp: "【好きなもの】好きなものを紹介する",
+        grammar: "I like [ 名詞 ].",
+        cards: [
+          { icon: "🐱", en: "cats", kana: "キャッツ", jp: "猫" },
+          { icon: "🍜", en: "ramen", kana: "ラーメン", jp: "ラーメン" },
+          { icon: "⚽", en: "soccer", kana: "サッカー", jp: "サッカー" },
+          { icon: "🎵", en: "music", kana: "ミュージック", jp: "音楽" },
+          { icon: "🍓", en: "strawberries", kana: "ストロベリーズ", jp: "いちご" },
+          { icon: "🎮", en: "video games", kana: "ビデオ ゲームズ", jp: "テレビゲーム" }
+        ]
+      }
+    ]
+  },
+
+  town: {
+    intro: "Hello. Welcome to my town and school.",
+    reasons: [
+      {
+        jp: "【居住】〜に住んでいる",
+        grammar: "I live in [ 場所 ].",
+        cards: [
+          { icon: "🗾", en: "Tokyo", kana: "トウキョウ", jp: "東京" },
+          { icon: "🏯", en: "Osaka", kana: "オオサカ", jp: "大阪" },
+          { icon: "🏡", en: "a quiet town", kana: "ア クワイエット タウン", jp: "静かな町" },
+          { icon: "🌆", en: "a big city", kana: "ア ビッグ シティ", jp: "大きな町" }
+        ]
+      },
+      {
+        jp: "【紹介】これは〜です（This is）",
+        grammar: "This is [ 名詞 ].",
+        cards: [
+          { icon: "🏫", en: "my school", kana: "マイ スクール", jp: "私の学校" },
+          { icon: "🌳", en: "my favorite park", kana: "マイ フェイバリット パーク", jp: "お気に入りの公園" },
+          { icon: "📚", en: "our library", kana: "アワー ライブラリー", jp: "私たちの図書館" }
+        ]
+      },
+      {
+        jp: "【町の紹介】町にある場所を紹介する",
+        grammar: "There is [ 場所 ] in my town.",
+        cards: [
+          { icon: "📚", en: "a library", kana: "ア ライブラリー", jp: "図書館" },
+          { icon: "🌳", en: "a big park", kana: "ア ビッグ パーク", jp: "大きな公園" },
+          { icon: "🏬", en: "a shopping mall", kana: "ア ショッピング モール", jp: "ショッピングモール" },
+          { icon: "🏥", en: "a hospital", kana: "ア ホスピタル", jp: "病院" },
+          { icon: "🏊", en: "a swimming pool", kana: "ア スウィミング プール", jp: "プール" }
+        ]
+      }
+    ]
+  },
+
+  weekend: {
+    intro: "Hello, everyone. This is my weekend.",
+    reasons: [
+      {
+        jp: "【習慣】いつも〜をする",
+        grammar: "I usually [ 動作 ] on Sundays.",
+        cards: [
+          { icon: "📖", en: "read comic books", kana: "リード コミック ブックス", jp: "漫画を読む" },
+          { icon: "🎮", en: "play games", kana: "プレイ ゲームズ", jp: "ゲームをする" },
+          { icon: "🧹", en: "clean my room", kana: "クリーン マイ ルーム", jp: "部屋を掃除する" },
+          { icon: "🚲", en: "ride my bicycle", kana: "ライド マイ バイシクル", jp: "自転車に乗る" },
+          { icon: "🎤", en: "sing songs", kana: "シング ソングズ", jp: "歌を歌う" }
+        ]
+      },
+      {
+        jp: "【所有】〜を持っている（I have）",
+        grammar: "I have [ 名詞 ].",
+        cards: [
+          { icon: "🐶", en: "a pet dog", kana: "ア ペット ドッグ", jp: "ペットの犬" },
+          { icon: "🚲", en: "a new bicycle", kana: "ア ニュー バイシクル", jp: "新しい自転車" },
+          { icon: "🐱", en: "a cat", kana: "ア キャット", jp: "猫" },
+          { icon: "📚", en: "many books", kana: "メニー ブックス", jp: "たくさんの本" }
+        ]
+      },
+      {
+        jp: "【週末】週末に行く場所を紹介する",
+        grammar: "I go to [ 場所 ] on weekends.",
+        cards: [
+          { icon: "📚", en: "the library", kana: "ザ ライブラリー", jp: "図書館" },
+          { icon: "🏞️", en: "the park", kana: "ザ パーク", jp: "公園" },
+          { icon: "🏊", en: "the swimming pool", kana: "ザ スウィミング プール", jp: "プール" },
+          { icon: "🛍️", en: "the shopping mall", kana: "ザ ショッピング モール", jp: "ショッピングモール" }
+        ]
+      }
+    ]
+  },
+
+  hero: {
+    intro: "Hello. I want to introduce my family and hero.",
+    reasons: [
+      {
+        jp: "【人物】彼は／彼女はとても〜だ",
+        grammar: "He / She is very [ 形容詞 ].",
+        cards: [
+          { icon: "💖", en: "kind", kana: "カインド", jp: "やさしい" },
+          { icon: "⚡", en: "cool", kana: "クール", jp: "かっこいい" },
+          { icon: "🔥", en: "strong", kana: "ストロング", jp: "つよい" },
+          { icon: "😊", en: "funny", kana: "ファニー", jp: "おもしろい" },
+          { icon: "🌟", en: "amazing", kana: "アメイジング", jp: "すばらしい" }
+        ]
+      },
+      {
+        jp: "【好き】私は家族やヒーローが好き",
+        grammar: "I like [ 人 ].",
+        cards: [
+          { icon: "👨‍👩‍👧‍👦", en: "my family", kana: "マイ ファミリー", jp: "わたしの家族" },
+          { icon: "🦸", en: "my hero", kana: "マイ ヒーロー", jp: "ぼくのヒーロー" },
+          { icon: "👩", en: "my mother", kana: "マイ マザー", jp: "私のお母さん" },
+          { icon: "👨", en: "my father", kana: "マイ ファーザー", jp: "私のお父さん" }
+        ]
+      },
+      {
+        jp: "【あこがれの人】尊敬する人を紹介する",
+        grammar: "I admire [ 人 ].",
+        cards: [
+          { icon: "👩", en: "my mother", kana: "マイ マザー", jp: "私のお母さん" },
+          { icon: "👨", en: "my father", kana: "マイ ファーザー", jp: "私のお父さん" },
+          { icon: "👩‍🏫", en: "my teacher", kana: "マイ ティーチャー", jp: "私の先生" },
+          { icon: "🧑", en: "my friend", kana: "マイ フレンド", jp: "私の友達" }
+        ]
+      }
+    ]
+  },
+
+  world: {
+    intro: "Hello. I want to talk about a country I want to visit.",
+    reasons: [
+      {
+        jp: "【希望】〜へ行ってみたい",
+        grammar: "I want to go to [ 国名 ].",
+        cards: [
+          { icon: "🗽", en: "America", kana: "アメリカ", jp: "アメリカ" },
+          { icon: "🗼", en: "France", kana: "フランス", jp: "フランス" },
+          { icon: "🦘", en: "Australia", kana: "オーストラリア", jp: "オーストラリア" },
+          { icon: "🇬🇧", en: "the United Kingdom", kana: "ザ ユナイテッド キングダム", jp: "イギリス" },
+          { icon: "🇨🇦", en: "Canada", kana: "カナダ", jp: "カナダ" },
+          { icon: "🇯🇵", en: "Japan", kana: "ジャパン", jp: "日本" }
+        ]
+      },
+      {
+        jp: "【動作】〜を見たい・食べたい",
+        grammar: "I want to [ 動作 ].",
+        cards: [
+          { icon: "🍕", en: "eat real pizza", kana: "イート リアル ピザ", jp: "本場のピザを食べる" },
+          { icon: "🏰", en: "see famous castles", kana: "シー フェイマス キャッスルズ", jp: "有名なお城を見る" },
+          { icon: "🐨", en: "see koalas", kana: "シー コアラズ", jp: "コアラを見る" },
+          { icon: "🏖️", en: "swim in the sea", kana: "スウィム イン ザ シー", jp: "海で泳ぐ" }
+        ]
+      },
+      {
+        jp: "【見たいもの】有名なものを見たい",
+        grammar: "I want to see [ もの ].",
+        cards: [
+          { icon: "🗼", en: "the Eiffel Tower", kana: "ジ エッフェル タワー", jp: "エッフェル塔" },
+          { icon: "🗽", en: "the Statue of Liberty", kana: "ザ スタチュー オブ リバティ", jp: "自由の女神" },
+          { icon: "🐨", en: "koalas", kana: "コアラズ", jp: "コアラ" },
+          { icon: "🏖️", en: "beautiful beaches", kana: "ビューティフル ビーチズ", jp: "美しいビーチ" }
+        ]
+      }
+    ]
+  }
+};
+
+const VOCAB_DATA = [
+  { category: "jobs", icon: "👨‍🏫", en: "teacher", kana: "ティーチャー", jp: "先生" },
+  { category: "jobs", icon: "👩‍⚕️", en: "doctor", kana: "ドクター", jp: "医者" },
+  { category: "jobs", icon: "🥐", en: "baker", kana: "ベイカー", jp: "パン屋さん" },
+  { category: "jobs", icon: "🎮", en: "game creator", kana: "ゲーム クリエイター", jp: "ゲーム制作者" },
+  { category: "jobs", icon: "⚽", en: "soccer player", kana: "サッカー プレイヤー", jp: "サッカー選手" },
+  { category: "jobs", icon: "🎨", en: "artist", kana: "アーティスト", jp: "芸術家" },
+  { category: "jobs", icon: "👮", en: "police officer", kana: "ポリス オフィサー", jp: "警察官" },
+  { category: "jobs", icon: "👨‍🚒", en: "firefighter", kana: "ファイヤーファイター", jp: "消防士" },
+  { category: "jobs", icon: "👨‍✈️", en: "pilot", kana: "パイロット", jp: "パイロット" },
+  { category: "jobs", icon: "👨‍🍳", en: "chef", kana: "シェフ", jp: "料理人" },
+  { category: "jobs", icon: "🎤", en: "singer", kana: "シンガー", jp: "歌手" },
+  { category: "jobs", icon: "🐶", en: "vet", kana: "ベット", jp: "獣医" },
+  { category: "jobs", icon: "🚀", en: "astronaut", kana: "アストロノート", jp: "宇宙飛行士" },
+  { category: "jobs", icon: "🎸", en: "musician", kana: "ミュージシャン", jp: "音楽家" },
+  { category: "jobs", icon: "🧑‍🔬", en: "scientist", kana: "サイエンティスト", jp: "科学者" },
+  { category: "jobs", icon: "👩‍⚕️", en: "nurse", kana: "ナース", jp: "看護師" },
+  { category: "jobs", icon: "🧑‍🌾", en: "farmer", kana: "ファーマー", jp: "農家" },
+  { category: "jobs", icon: "📷", en: "photographer", kana: "フォトグラファー", jp: "写真家" },
+
+  { category: "actions_past", icon: "🚶", en: "went", kana: "ウェント", jp: "行った (goの過去形)" },
+  { category: "actions_past", icon: "🍜", en: "ate", kana: "エイト", jp: "食べた (eatの過去形)" },
+  { category: "actions_past", icon: "⚽", en: "played", kana: "プレイド", jp: "遊んだ・した (playの過去形)" },
+  { category: "actions_past", icon: "🎬", en: "watched", kana: "ウォッチト", jp: "見た (watchの過去形)" },
+  { category: "actions_past", icon: "🎶", en: "enjoyed", kana: "エンジョイド", jp: "楽しんだ (enjoyの過去形)" },
+  { category: "actions_past", icon: "👵", en: "visited", kana: "ビジティッド", jp: "訪れた (visitの過去形)" },
+  { category: "actions_past", icon: "🛍️", en: "bought", kana: "ボート", jp: "買った (buyの過去形)" },
+  { category: "actions_past", icon: "👀", en: "saw", kana: "ソー", jp: "見た (seeの過去形)" },
+  { category: "actions_past", icon: "🍰", en: "made", kana: "メイド", jp: "作った (makeの過去形)" },
+  { category: "actions_past", icon: "🏃", en: "practiced", kana: "プラクティスト", jp: "練習した (practiceの過去形)" },
+  { category: "actions_past", icon: "🎤", en: "sang a song", kana: "サング ア ソング", jp: "歌を歌った" },
+  { category: "actions_past", icon: "🏊", en: "swam in the pool", kana: "スワム イン ザ プール", jp: "プールで泳いだ" },
+  { category: "actions_past", icon: "✏️", en: "studied English", kana: "スタディド イングリッシュ", jp: "英語を勉強した" },
+  { category: "actions_past", icon: "📸", en: "took pictures", kana: "トゥック ピクチャーズ", jp: "写真を撮った" },
+  { category: "actions_past", icon: "🎂", en: "made a cake", kana: "メイド ア ケイク", jp: "ケーキを作った" },
+  { category: "actions_past", icon: "🎁", en: "got a present", kana: "ガット ア プレゼント", jp: "プレゼントをもらった" },
+
+  { category: "actions_present", icon: "🏊", en: "swim fast", kana: "スウィム ファスト", jp: "速く泳ぐ" },
+  { category: "actions_present", icon: "🎸", en: "play the guitar", kana: "プレイ ザ ギター", jp: "ギターを弾く" },
+  { category: "actions_present", icon: "💻", en: "use a computer", kana: "ユーズ ア コンピュータ", jp: "パソコンを使う" },
+  { category: "actions_present", icon: "🗣️", en: "speak English", kana: "スピーク イングリッシュ", jp: "英語を話す" },
+  { category: "actions_present", icon: "📖", en: "read comic books", kana: "リード コミック ブックス", jp: "漫画を読む" },
+  { category: "actions_present", icon: "✈️", en: "travel around the world", kana: "トラベル アラウンド ザ ワールド", jp: "世界中を旅する" },
+  { category: "actions_present", icon: "🎹", en: "play the piano", kana: "プレイ ザ ピアノ", jp: "ピアノを弾く" },
+  { category: "actions_present", icon: "💃", en: "dance well", kana: "ダンス ウェル", jp: "上手に踊る" },
+  { category: "actions_present", icon: "🍳", en: "cook curry", kana: "クック カレー", jp: "カレーを作る" },
+  { category: "actions_present", icon: "🖼️", en: "paint pictures", kana: "ペイント ピクチャーズ", jp: "絵を描く" },
+  { category: "actions_present", icon: "♟️", en: "play chess", kana: "プレイ チェス", jp: "チェスをする" },
+  { category: "actions_present", icon: "📚", en: "read books", kana: "リード ブックス", jp: "本を読む" },
+  { category: "actions_present", icon: "🚲", en: "ride a bicycle", kana: "ライド ア バイシクル", jp: "自転車に乗る" },
+  { category: "actions_present", icon: "🎤", en: "sing songs", kana: "シング ソングズ", jp: "歌を歌う" },
+
+  { category: "places_countries", icon: "🗽", en: "America", kana: "アメリカ", jp: "アメリカ" },
+  { category: "places_countries", icon: "🗼", en: "France", kana: "フランス", jp: "フランス" },
+  { category: "places_countries", icon: "🦘", en: "Australia", kana: "オーストラリア", jp: "オーストラリア" },
+  { category: "places_countries", icon: "⛩️", en: "Kyoto", kana: "キョウト", jp: "京都" },
+  { category: "places_countries", icon: "🏞️", en: "park", kana: "パーク", jp: "公園" },
+  { category: "places_countries", icon: "📚", en: "library", kana: "ライブラリー", jp: "図書館" },
+  { category: "places_countries", icon: "🏥", en: "hospital", kana: "ホスピタル", jp: "病院" },
+  { category: "places_countries", icon: "🏬", en: "shopping mall", kana: "ショッピング モール", jp: "ショッピングモール" },
+  { category: "places_countries", icon: "🏊", en: "swimming pool", kana: "スウィミング プール", jp: "プール" },
+  { category: "places_countries", icon: "🗼", en: "the Eiffel Tower", kana: "ジ エッフェル タワー", jp: "エッフェル塔" },
+  { category: "places_countries", icon: "🏖️", en: "beach", kana: "ビーチ", jp: "海岸" },
+  { category: "places_countries", icon: "🇬🇧", en: "the United Kingdom", kana: "ザ ユナイテッド キングダム", jp: "イギリス" },
+  { category: "places_countries", icon: "🇨🇦", en: "Canada", kana: "カナダ", jp: "カナダ" },
+  { category: "places_countries", icon: "🇯🇵", en: "Japan", kana: "ジャパン", jp: "日本" },
+
+  { category: "nouns_things", icon: "🌸", en: "spring", kana: "スプリング", jp: "春" },
+  { category: "nouns_things", icon: "🍦", en: "ice cream", kana: "アイスクリーム", jp: "アイスクリーム" },
+  { category: "nouns_things", icon: "📐", en: "math", kana: "マス", jp: "算数" },
+  { category: "nouns_things", icon: "🏕️", en: "school trip", kana: "スクール トリップ", jp: "修学旅行" },
+  { category: "nouns_things", icon: "🏃", en: "sports day", kana: "スポーツ デー", jp: "運動会" },
+  { category: "nouns_things", icon: "🐱", en: "cats", kana: "キャッツ", jp: "猫" },
+  { category: "nouns_things", icon: "🍜", en: "ramen", kana: "ラーメン", jp: "ラーメン" },
+  { category: "nouns_things", icon: "🎵", en: "music", kana: "ミュージック", jp: "音楽" },
+  { category: "nouns_things", icon: "🌞", en: "summer", kana: "サマー", jp: "夏" },
+  { category: "nouns_things", icon: "🏀", en: "basketball", kana: "バスケットボール", jp: "バスケットボール" },
+  { category: "nouns_things", icon: "🍛", en: "curry and rice", kana: "カレー アンド ライス", jp: "カレーライス" },
+  { category: "nouns_things", icon: "🐼", en: "pandas", kana: "パンダズ", jp: "パンダ" },
+  { category: "nouns_things", icon: "🌻", en: "sunflowers", kana: "サンフラワーズ", jp: "ひまわり" },
+  { category: "nouns_things", icon: "🎮", en: "video games", kana: "ビデオ ゲームズ", jp: "テレビゲーム" },
+  { category: "nouns_things", icon: "🍓", en: "strawberries", kana: "ストロベリーズ", jp: "いちご" }
+];
+
+const GRAMMAR_GUIDE_DATA = [
+  { tag: "状態・感想", pattern: "It is [ 形容詞 ].", example: "It is fun.", jp: "それは〜です。" },
+  { tag: "好きなもの", pattern: "I like [ 名詞 ].", example: "I like music.", jp: "私は〜が好きです。" },
+  { tag: "好きなこと", pattern: "I like [ 動詞ing ].", example: "I like playing soccer.", jp: "私は〜することが好きです。" },
+  { tag: "持っているもの", pattern: "I have [ 名詞 ].", example: "I have a dog.", jp: "私は〜を持っています。" },
+  { tag: "紹介", pattern: "This is [ 名詞 ].", example: "This is my school.", jp: "これは〜です。" },
+  { tag: "質問", pattern: "Do you like [ 名詞 ]?", example: "Do you like cats?", jp: "あなたは〜が好きですか？" },
+  { tag: "答え", pattern: "Yes, I do. / No, I don't.", example: "Yes, I do.", jp: "はい、好きです。／いいえ、好きではありません。" },
+  { tag: "将来の夢", pattern: "I want to be a [ 職業 ].", example: "I want to be a teacher.", jp: "私は〜になりたいです。" },
+  { tag: "やりたいこと", pattern: "I want to [ 動詞 ].", example: "I want to help people.", jp: "私は〜したいです。" },
+  { tag: "できること", pattern: "I can [ 動詞 ].", example: "I can swim fast.", jp: "私は〜ができます。" },
+  { tag: "できないこと", pattern: "I can't [ 動詞 ].", example: "I can't fly.", jp: "私は〜できません。" },
+  { tag: "得意なこと", pattern: "I am good at [ 名詞 / 動詞ing ].", example: "I am good at drawing.", jp: "私は〜が得意です。" },
+  { tag: "行った場所", pattern: "I went to [ 場所 ].", example: "I went to Kyoto.", jp: "私は〜へ行きました。" },
+  { tag: "過去のこと", pattern: "I [ 過去形の動詞 ].", example: "I played basketball.", jp: "私は〜しました。" },
+  { tag: "思い出", pattern: "I enjoyed [ 名詞 ].", example: "I enjoyed the school trip.", jp: "私は〜を楽しみました。" },
+  { tag: "一番好きなもの", pattern: "My favorite season is [ 季節 ].", example: "My favorite season is spring.", jp: "私の一番好きな季節は〜です。" },
+  { tag: "住んでいる場所", pattern: "I live in [ 場所 ].", example: "I live in Tokyo.", jp: "私は〜に住んでいます。" },
+  { tag: "町の紹介", pattern: "There is [ 場所 ] in my town.", example: "There is a big park in my town.", jp: "私の町には〜があります。" },
+  { tag: "週末の習慣", pattern: "I usually [ 動詞 ] on weekends.", example: "I usually read books on weekends.", jp: "私は週末によく〜します。" },
+  { tag: "行きたい場所", pattern: "I want to go to [ 場所 ].", example: "I want to go to France.", jp: "私は〜へ行きたいです。" },
+  { tag: "人物の紹介", pattern: "He / She is very [ 形容詞 ].", example: "She is very kind.", jp: "彼／彼女はとても〜です。" },
+  { tag: "尊敬する人", pattern: "I admire [ 人 ].", example: "I admire my mother.", jp: "私は〜を尊敬しています。" },
+  { tag: "理由", pattern: "Because it is [ 形容詞 ].", example: "Because it is exciting.", jp: "なぜなら、それは〜だからです。" },
+  { tag: "お礼", pattern: "Thank you for listening.", example: "Thank you for listening.", jp: "聞いてくれてありがとうございます。" }
+];
+
+let currentTopicKey = "";
+let currentReasonIndex = null;
+let currentSelectedWord = "";
+let toastTimer = null;
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 3000);
+}
+
+function updateSpeechRateLabel() {
+  const rate = Number(document.getElementById("speechRate").value);
+  document.getElementById("speechRateValue").textContent = `${rate.toFixed(1)}×`;
+}
+
+function getBritishMaleVoice() {
+  if (!("speechSynthesis" in window)) return null;
+
+  const voices = window.speechSynthesis.getVoices();
+  const maleNameHints = [
+    "male", "man", "daniel", "arthur", "george",
+    "oliver", "ryan", "lee", "alfie", "fred"
+  ];
+
+  return voices.find(voice =>
+    /^en-GB$/i.test(voice.lang) &&
+    maleNameHints.some(hint => voice.name.toLowerCase().includes(hint))
+  ) || null;
+}
+
+function speakWithBritishMaleVoice(text) {
+  if (!("speechSynthesis" in window)) {
+    showToast("このブラウザは音声読み上げに対応していません。");
+    return;
+  }
+
+  const voice = getBritishMaleVoice();
+  if (!voice) {
+    showToast("男性のイギリス英語音声がありません。端末に音声を追加してください。");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.voice = voice;
+  utterance.lang = "en-GB";
+  utterance.rate = Number(document.getElementById("speechRate").value);
+  window.speechSynthesis.speak(utterance);
+}
+
+function speakSingleWord(text) {
+  speakWithBritishMaleVoice(text);
+}
+
+function switchTab(tabId) {
+  ["speech", "vocab", "grammar"].forEach((id, index) => {
+    document.querySelectorAll(".tab-btn")[index].classList.toggle("active", id === tabId);
+    document.getElementById(`tab-${id}`).classList.toggle("active", id === tabId);
+  });
+
+  if (tabId === "vocab") renderVocabCards();
+  if (tabId === "grammar") renderGrammarGuide();
+}
+
+function makeWordCard(card, onSelect, selected = false) {
+  const cardEl = document.createElement("div");
+  cardEl.className = `word-card${selected ? " selected" : ""}`;
+  cardEl.setAttribute("role", "button");
+  cardEl.setAttribute("tabindex", "0");
+  cardEl.setAttribute("aria-label", `${card.en}, ${card.jp}`);
+  cardEl.innerHTML = `
+    <div class="card-icon">${card.icon}</div>
+    <div class="card-en">${card.en}</div>
+    <div class="card-kana">${card.kana}</div>
+    <div class="card-jp">${card.jp}</div>
+  `;
+
+  cardEl.addEventListener("click", onSelect);
+  cardEl.addEventListener("keydown", event => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onSelect();
+    }
+  });
+  return cardEl;
+}
+
+function renderVocabCards() {
+  const category = document.getElementById("vocabCategory").value;
+  const deck = document.getElementById("vocabCardDeck");
+  deck.innerHTML = "";
+
+  const filtered = category === "all"
+    ? VOCAB_DATA
+    : VOCAB_DATA.filter(item => item.category === category);
+
+  filtered.forEach(card => {
+    deck.appendChild(makeWordCard(card, () => speakSingleWord(card.en)));
+  });
+}
+
+function renderGrammarGuide() {
+  const grid = document.getElementById("grammarListGrid");
+  if (grid.innerHTML.trim()) return;
+
+  GRAMMAR_GUIDE_DATA.forEach(item => {
+    const el = document.createElement("div");
+    el.className = "grammar-item-card";
+    el.setAttribute("role", "button");
+    el.setAttribute("tabindex", "0");
+    el.title = "クリックすると発音します";
+    el.innerHTML = `
+      <div class="grammar-item-tag">${item.tag}</div>
+      <div class="grammar-item-pat">${item.pattern}</div>
+      <div style="font-size:14px;font-weight:bold;color:#2D3748;margin-top:4px;">
+        例: ${item.example}
+      </div>
+      <div class="grammar-item-jp">${item.jp}</div>
+    `;
+
+    const readExample = () => speakSingleWord(item.example);
+    el.addEventListener("click", readExample);
+    el.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        readExample();
+      }
+    });
+    grid.appendChild(el);
+  });
+}
+
+function selectTopic(key, button) {
+  currentTopicKey = key;
+  currentReasonIndex = null;
+  currentSelectedWord = "";
+  document.getElementById("customInput").value = "";
+
+  document.querySelectorAll(".topic-btn").forEach(btn => btn.classList.remove("active"));
+  button.classList.add("active");
+
+  const topic = TOPICS[key];
+  const reasonGrid = document.getElementById("reasonGrid");
+  reasonGrid.innerHTML = "";
+
+  topic.reasons.forEach((reason, index) => {
+    const btn = document.createElement("button");
+    btn.className = "reason-btn";
+    btn.textContent = `💡 ${reason.jp}`;
+    btn.addEventListener("click", () => selectReason(index));
+    reasonGrid.appendChild(btn);
+  });
+
+  document.getElementById("step2").style.display = "block";
+  document.getElementById("step3").style.display = "none";
+  updatePreview(`${topic.intro}\n\n(STEP 2で内容をえらんでね)`);
+}
+
+function selectReason(index) {
+  currentReasonIndex = index;
+  currentSelectedWord = "";
+  document.getElementById("customInput").value = "";
+
+  const topic = TOPICS[currentTopicKey];
+  const reason = topic.reasons[index];
+
+  document.querySelectorAll(".reason-btn").forEach((btn, i) => {
+    btn.classList.toggle("active", i === index);
+  });
+
+  document.getElementById("grammarBox").innerHTML = `
+    <div>【使いたい文法パターン】</div>
+    <div class="grammar-hint">${reason.grammar}</div>
+  `;
+
+  const deck = document.getElementById("cardDeck");
+  deck.innerHTML = "";
+
+  reason.cards.forEach(card => {
+    const cardEl = makeWordCard(card, () => {
+      document.querySelectorAll("#cardDeck .word-card").forEach(item => {
+        item.classList.remove("selected");
+        item.setAttribute("aria-selected", "false");
+      });
+
+      cardEl.classList.add("selected");
+      cardEl.setAttribute("aria-selected", "true");
+      currentSelectedWord = card.en;
+      document.getElementById("customInput").value = card.en;
+      speakSingleWord(card.en);
+      renderSpeech();
+    });
+
+    cardEl.setAttribute("aria-selected", "false");
+    deck.appendChild(cardEl);
+  });
+
+  document.getElementById("step3").style.display = "block";
+  renderSpeech();
+}
+
+document.getElementById("customInput").addEventListener("input", event => {
+  currentSelectedWord = event.target.value;
+  document.querySelectorAll("#cardDeck .word-card").forEach(card => {
+    card.classList.remove("selected");
+    card.setAttribute("aria-selected", "false");
+  });
+  renderSpeech();
+});
+
+function renderSpeech() {
+  if (!currentTopicKey || currentReasonIndex === null) return;
+
+  const topic = TOPICS[currentTopicKey];
+  const reason = topic.reasons[currentReasonIndex];
+  let line = reason.grammar;
+
+  if (currentSelectedWord.trim()) {
+    if (line.includes("[") && line.includes("]")) {
+      line = line.replace(/\[[^\]]*\]/, currentSelectedWord.trim());
+    } else if (currentTopicKey === "favorites" && reason.jp.includes("一番好きなもの")) {
+      line = currentSelectedWord.trim();
+    }
+  }
+
+  updatePreview(`${topic.intro}\n${line}\nThank you for listening.`);
+}
+
+function updatePreview(text) {
+  document.getElementById("previewText").innerText = text;
+}
+
+function speakText() {
+  speakWithBritishMaleVoice(document.getElementById("previewText").innerText);
+}
+
+function copyText() {
+  const text = document.getElementById("previewText").innerText;
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text)
+      .then(() => showToast("📋 原稿をコピーしました！"))
+      .catch(() => fallbackCopyText(text));
+  } else {
+    fallbackCopyText(text);
+  }
+}
+
+function fallbackCopyText(text) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.style.position = "fixed";
+  textArea.style.left = "-9999px";
+  document.body.appendChild(textArea);
+  textArea.select();
+
+  try {
+    const copied = document.execCommand("copy");
+    showToast(copied ? "📋 原稿をコピーしました！" : "コピーに失敗しました。");
+  } catch (error) {
+    showToast("コピーに失敗しました。");
+  } finally {
+    document.body.removeChild(textArea);
+  }
+}
+
+updateSpeechRateLabel();
+
+if ("speechSynthesis" in window) {
+  window.speechSynthesis.onvoiceschanged = () => {
+    window.speechSynthesis.getVoices();
+  };
+}
+</script>
+</body>
+</html>
